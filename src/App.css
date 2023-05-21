@@ -1,38 +1,92 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;  
+}
+
+body {
+  font-family: 'Poppins', sans-serif; 
+}
+
 .App {
-  text-align: center;
+  text-align: center;  
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.container {
+  
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+main {
+  padding: 10px;
+  min-height: calc(100vh - 100px);
+  width: 900px;
+  margin: 0 auto;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+button {
+  outline: invert;
+  border: none;
+  cursor: pointer;
+  padding: 5px 5px;
+  border-radius: 5px;
+  margin-right: 10px;
+  background-color: unset;
+}
+
+header {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  text-align: center;  
+  background-color: black;
+  height: 60px;   
 }
 
-.App-link {
-  color: #61dafb;
+header a {  
+  margin: 20px;
+  color: #fff;
+  text-decoration: none;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+header a:hover { 
+  color: #707070; 
 }
+
+h1 {
+  text-align: center;
+  margin-top: 20px;
+}
+
+p {  
+  text-align: center;  
+}
+
+footer {
+  text-align: center;  
+}
+
+.active {
+  color: rgb(211, 231, 0);
+  cursor: default;
+}
+
+.post {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 800px;
+}
+
+.post svg {
+  font-size: 40px;  
+}
+
+.postContent p {
+  text-align: left;
+}
+
+
+
+
