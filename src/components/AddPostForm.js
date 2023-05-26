@@ -1,26 +1,75 @@
 import CancelIcon from '@mui/icons-material/Cancel';
+import { Component } from 'react';
 
 
-const AddPostForm = ({handleAddFormHide}) => {
-    return (
-        <>
-            <form action='' className="addPostForm">
-                <button className='nideBtn' onClick={handleAddFormHide}><CancelIcon /></button>
-                <h2>Создание поста</h2>
-                <div>
-                    <input className="addFormInput" type='text' name='postTitle' placeholder="Заголовок поста"/>
-                </div>
+class AddPostForm extends Component {
 
-                <div>
-                    <textarea className="addFormInput" name='postDescription' placeholder="Текст" />
-                </div>
+    state = {
+        postTitle: '',
+        postDesc: ''
+    }
 
-                <div><button onClick={handleAddFormHide} className="blackBtn" type='button'>Добавить пост</button></div>
-            </form>
+    handlePostTitleChange = e => {
+        this.setState({
+            postTitle: e.target.value
+        })
+    }
 
-            <div onClick={handleAddFormHide} className="overlay"></div>
-        </>
-    )
+    handlePostDescChange = e => {
+        this.setState({
+            postDesc: e.target.value
+        })
+    }
+
+    createPost = (e) => {
+        e.preventDefault()
+        const post = {
+            id: this.props.blogArr.length + 1,
+            title: this.state.postTitle,
+            description: this.state.postDesc,
+            Liked: false,
+        }
+
+        this.props.addNewBlogPost(post)
+        this.props.handleAddFormHide()      
+    }
+
+
+    render() {
+
+        const handleAddFormHide = this.props.handleAddFormHide
+        return (
+            <>
+                <form action='' className="addPostForm" onSubmit={this.createPost}>
+                    <button className='nideBtn' onClick={handleAddFormHide}><CancelIcon /></button>
+                    <h2>Создание поста</h2>
+                    <div>
+                        <input className="addFormInput"
+                            type='text' name='postTitle'
+                            placeholder="Заголовок поста"
+                            value={this.state.postTitle}
+                            onChange={this.handlePostTitleChange}
+                            required
+                        />
+                    </div>
+
+                    <div>
+                        <textarea className="addFormInput"
+                            name='postDescription'
+                            placeholder="Текст"
+                            value={this.state.postDescription}
+                            onChange={this.handlePostDescChange}
+                            required
+                        />
+                    </div>
+
+                    <div><button className="blackBtn" type='submit'>Добавить пост</button></div>
+                </form>
+
+                <div onClick={handleAddFormHide} className="overlay"></div>
+            </>
+        )
+    }
 }
 
 export { AddPostForm }
