@@ -9,7 +9,25 @@ class Blogpage extends Component {
     state = {
         showAddForm: false,
         blogArr: [],
-    }
+        isPanding: false,
+    };
+
+    fetchPosts = () => {
+        this.setState({
+            isPanding: true
+        })
+        axios.get('https://6470e53b3de51400f7251409.mockapi.io/Posts')
+            .then((response) => {
+                this.setState({
+                    blogArr: response.data,
+                    isPanding: false
+                })
+            })
+
+            .catch((err) => {
+                console.log(err)
+            })
+    };
 
     likePost = pos => {
         const temp = [...this.state.blogArr];
@@ -20,21 +38,22 @@ class Blogpage extends Component {
         })
 
         localStorage.setItem('blogPosts', JSON.stringify(temp))
-    }
+    };
 
 
-    deletePost = pos => {
-        if (window.confirm(`Удалить ${this.state.blogArr[pos].title}?`)) {
-            const temp = [...this.state.blogArr];
-            temp.splice(pos, 1);
+    deletePost = (blogPost) => {
+        if (window.confirm(`Удалить ${blogPost.title}?`)) {
 
-            this.setState({
-                blogArr: temp
-            })
+            axios.delete(`https://6470e53b3de51400f7251409.mockapi.io/Posts/${blogPost.id}`)
+                .then((response) => {
+                    this.fetchPosts()
+                })
 
-            localStorage.setItem('blogPosts', JSON.stringify(temp))
+                .catch((err) => {
+
+                })
         }
-    }
+    };
 
     handleAddFormShow = () => {
         this.setState({
@@ -67,17 +86,7 @@ class Blogpage extends Component {
     }
 
     componentDidMount() {
-        axios.get('https://6470e53b3de51400f7251409.mockapi.io/Posts')
-            .then((response) => {
-                this.setState({
-                    blogArr: response.data
-                })
-            })
-
-            .catch((err) => {
-                console.log(err)
-            })
-
+        this.fetchPosts()
         window.addEventListener('keyup', this.handleEscape)
     }
 
@@ -97,7 +106,7 @@ class Blogpage extends Component {
                     description={item.description}
                     Liked={item.Liked}
                     likePost={() => this.likePost(pos)}
-                    deletePost={() => this.deletePost(pos)}
+                    deletePost={() => this.deletePost(item)}
                 />
             )
         })
@@ -112,7 +121,7 @@ class Blogpage extends Component {
                     <AddPostForm blogArr={this.state.blogArr}
                         addNewBlogPost={this.addNewBlogPost}
                         handleAddFormHide={this.handleAddFormHide}
-                    />            
+                    />
                 )}
 
                 <>
@@ -120,6 +129,9 @@ class Blogpage extends Component {
                     <div className='addNewPosts'>
                         <button className='blackBtn' onClick={this.handleAddFormShow}>Создать новый пост</button>
                     </div>
+                    {
+                        this.state.isPanding && <h2>Подождите ...</h2>
+                    }
                     <div className='posts'>{blokPosts}</div>
 
                 </>
