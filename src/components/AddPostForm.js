@@ -23,8 +23,7 @@ class AddPostForm extends Component {
 
     createPost = (e) => {
         e.preventDefault()
-        const post = {
-            id: this.props.blogArr.length + 1,
+        const post = {            
             title: this.state.postTitle,
             description: this.state.postDesc,
             Liked: false,

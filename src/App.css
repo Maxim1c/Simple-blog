@@ -116,6 +116,20 @@ footer {
   text-align: left;
 }
 
+.posts {
+  position: relative;
+}
+
+.blogPage {
+  position: relative;
+}
+
+.blogPage .preloader {
+  position: absolute;
+  left: 50%;
+  top: 50%;   
+}
+
 .addPostForm {
   position: fixed;
   left: 50%;
@@ -168,3 +182,4 @@ footer {
   margin-bottom: 20px;
   margin-top: 20px;
 }
+

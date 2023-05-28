@@ -3,6 +3,8 @@ import { BlogCard } from '../components/BlogCard';
 import { Component } from 'react';
 import { AddPostForm } from '../components/AddPostForm';
 import axios from 'axios';
+import CircularProgress from '@mui/material/CircularProgress';
+import { Opacity } from '@mui/icons-material';
 
 class Blogpage extends Component {
 
@@ -13,9 +15,6 @@ class Blogpage extends Component {
     };
 
     fetchPosts = () => {
-        this.setState({
-            isPanding: true
-        })
         axios.get('https://6470e53b3de51400f7251409.mockapi.io/Posts')
             .then((response) => {
                 this.setState({
@@ -29,20 +28,28 @@ class Blogpage extends Component {
             })
     };
 
-    likePost = pos => {
-        const temp = [...this.state.blogArr];
-        temp[pos].Liked = !temp[pos].Liked
+    likePost = (blogPost) => {
+        const temp = { ...blogPost };
+        temp.Liked = !temp.Liked
 
-        this.setState({
-            blogArr: temp
-        })
+        axios.put(`https://6470e53b3de51400f7251409.mockapi.io/Posts/${blogPost.id}`, temp)
+            .then((response) => {
+                console.log('Пост изменён =>', response.data)
+                this.fetchPosts();
+            })
 
-        localStorage.setItem('blogPosts', JSON.stringify(temp))
+            .catch((err) => {
+                console.log(err)
+            })
+
     };
 
 
     deletePost = (blogPost) => {
         if (window.confirm(`Удалить ${blogPost.title}?`)) {
+            this.setState({
+                isPanding: true
+            })
 
             axios.delete(`https://6470e53b3de51400f7251409.mockapi.io/Posts/${blogPost.id}`)
                 .then((response) => {
@@ -50,53 +57,56 @@ class Blogpage extends Component {
                 })
 
                 .catch((err) => {
-
+                    console.log(err)
                 })
         }
+    };
+
+    addNewBlogPost = (blogPosts) => {
+        this.setState({
+            isPanding: true
+        })
+        axios.post('https://6470e53b3de51400f7251409.mockapi.io/Posts/', blogPosts)
+            .then((response) => {
+                console.log('Пост создан =>', response.data)
+                this.fetchPosts()
+            })
+
+            .catch((err) => {
+                console.log(err)
+            })
     };
 
     handleAddFormShow = () => {
         this.setState({
             showAddForm: true
         })
-    }
+    };
 
     handleAddFormHide = () => {
         this.setState({
             showAddForm: false
         })
-    }
+    };
 
     handleEscape = (e) => {
         if (e.key === 'Escape' && this.state.showAddForm) {
             this.handleAddFormHide()
         }
-    }
-
-    addNewBlogPost = (blogPosts) => {
-
-        this.setState((state) => {
-            const posts = [...state.blogArr];
-            posts.push(blogPosts);
-            localStorage.setItem('blogPosts', JSON.stringify(posts))
-            return {
-                blogArr: posts
-            }
-        })
-    }
+    };
 
     componentDidMount() {
         this.fetchPosts()
         window.addEventListener('keyup', this.handleEscape)
-    }
+    };
 
     componentWillUnmount() {
         window.removeEventListener('keyup', this.handleEscape)
-    }
+    };
 
     render() {
 
-        const blokPosts = this.state.blogArr.map((item, pos) => {
+        const blokPosts = this.state.blogArr.map((item) => {
             return (
 
                 <BlogCard
@@ -105,14 +115,15 @@ class Blogpage extends Component {
                     title={item.title}
                     description={item.description}
                     Liked={item.Liked}
-                    likePost={() => this.likePost(pos)}
+                    likePost={() => this.likePost(item)}
                     deletePost={() => this.deletePost(item)}
                 />
             )
         })
 
-        if (this.state.blogArr.length === 0)
-            return <h1>Загружаю данные ...</h1>
+        if (this.state.blogArr.length === 0) return <h1>Загружаю данные ...</h1>;
+
+        const postOpacity = this.state.isPanding ? 0.5 : 1;
 
         return (
             <div className='blogPage'>
@@ -129,11 +140,11 @@ class Blogpage extends Component {
                     <div className='addNewPosts'>
                         <button className='blackBtn' onClick={this.handleAddFormShow}>Создать новый пост</button>
                     </div>
-                    {
-                        this.state.isPanding && <h2>Подождите ...</h2>
-                    }
-                    <div className='posts'>{blokPosts}</div>
 
+                    <div className='posts' style={{ opacity: postOpacity }}>
+                        {blokPosts}
+                    </div>
+                    {!this.state.isPanding && <CircularProgress className='preloader' />}
                 </>
 
             </div>
