@@ -1,0 +1,36 @@
+
+.editPostForm {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 100;
+  
+    background-color: white;
+    width: 350px;
+    padding: 20px;
+  
+    text-align: center;
+    border-radius: 10px;
+  }
+  
+  .editPostForm div + div {
+    margin-top: 10px;
+  }
+  
+  .editPostForm h2 {
+    margin: 0;
+    margin-bottom: 10px;
+  }
+
+  .editFormInput {
+    width: 100%;
+    padding: 4 5px;
+    border-radius: 5px;
+    border: 1px solid #c2bcbc;
+  }
+  
+  .editFormInput:focus::placeholder {
+    color: transparent;
+  }
+  

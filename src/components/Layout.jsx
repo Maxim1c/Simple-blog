@@ -6,9 +6,10 @@ const Layout = () => {
         <>
             <header>
                 <nav>
-                    <NavLink to='/'>Home</NavLink>
-                    <NavLink to='/posts'>Blog</NavLink>
-                    <NavLink to='/about'>About</NavLink>
+                    <NavLink exact to='/'>Home</NavLink>
+                    <NavLink exact to='/posts'>Blog</NavLink>
+                    <NavLink exact to='/about'>About</NavLink>
+                    <NavLink exact to='/loginPage'>Login</NavLink>
                 </nav>
             </header>
 

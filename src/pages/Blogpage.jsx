@@ -5,17 +5,25 @@ import { AddPostForm } from '../components/AddPostForm';
 import axios from 'axios';
 import CircularProgress from '@mui/material/CircularProgress';
 import { Opacity } from '@mui/icons-material';
+import { EditPostForm } from '../components/EditPostForm';
+import { postsUrl } from '../shared/ProjectData';
+
+let sourse;
 
 class Blogpage extends Component {
 
     state = {
         showAddForm: false,
+        showEditForm: false,
         blogArr: [],
         isPanding: false,
+        selectedPost: {}
     };
 
     fetchPosts = () => {
-        axios.get('https://6470e53b3de51400f7251409.mockapi.io/Posts')
+        sourse = axios.CancelToken.source();
+        let config = { CancelToken: sourse.token }
+        axios.get(postsUrl, config)
             .then((response) => {
                 this.setState({
                     blogArr: response.data,
@@ -28,11 +36,21 @@ class Blogpage extends Component {
             })
     };
 
+    componentDidMount() {
+        this.fetchPosts()
+    };
+
+    componentWillUnmount() {
+        if (sourse) {
+            sourse.cancel('Axios get canceled')
+        }
+    }
+
     likePost = (blogPost) => {
         const temp = { ...blogPost };
         temp.Liked = !temp.Liked
 
-        axios.put(`https://6470e53b3de51400f7251409.mockapi.io/Posts/${blogPost.id}`, temp)
+        axios.put(`${postsUrl}${blogPost.id}`, temp)
             .then((response) => {
                 console.log('Пост изменён =>', response.data)
                 this.fetchPosts();
@@ -51,7 +69,7 @@ class Blogpage extends Component {
                 isPanding: true
             })
 
-            axios.delete(`https://6470e53b3de51400f7251409.mockapi.io/Posts/${blogPost.id}`)
+            axios.delete(`${postsUrl}${blogPost.id}`)
                 .then((response) => {
                     this.fetchPosts()
                 })
@@ -64,9 +82,9 @@ class Blogpage extends Component {
 
     addNewBlogPost = (blogPosts) => {
         this.setState({
-            isPanding: true
+            isPanding: true,
         })
-        axios.post('https://6470e53b3de51400f7251409.mockapi.io/Posts/', blogPosts)
+        axios.post(postsUrl, blogPosts)
             .then((response) => {
                 console.log('Пост создан =>', response.data)
                 this.fetchPosts()
@@ -77,32 +95,51 @@ class Blogpage extends Component {
             })
     };
 
+    editBlogPost = (updateBlogPost) => {
+        this.setState({
+            isPanding: true,
+        })
+        axios.put(`${postsUrl}${updateBlogPost.id}, updateBlogPost`)
+            .then((response) => {
+                console.log('Пост отредактирован =>', response.data)
+                this.fetchPosts()
+            })
+
+            .catch((err) => {
+                console.log(err)
+            })
+
+    }
+
     handleAddFormShow = () => {
         this.setState({
-            showAddForm: true
+            showAddForm: true,
         })
     };
 
     handleAddFormHide = () => {
         this.setState({
-            showAddForm: false
+            showAddForm: false,
         })
     };
 
-    handleEscape = (e) => {
-        if (e.key === 'Escape' && this.state.showAddForm) {
-            this.handleAddFormHide()
-        }
+    handleEditFormShow = () => {
+        this.setState({
+            showEditForm: true,
+        })
     };
 
-    componentDidMount() {
-        this.fetchPosts()
-        window.addEventListener('keyup', this.handleEscape)
+    handleEditFormHide = () => {
+        this.setState({
+            showEditForm: false,
+        })
     };
 
-    componentWillUnmount() {
-        window.removeEventListener('keyup', this.handleEscape)
-    };
+    handleSelectedPost = (blogPost) => {
+        this.setState({
+            selectedPost: blogPost
+        })
+    }
 
     render() {
 
@@ -117,6 +154,8 @@ class Blogpage extends Component {
                     Liked={item.Liked}
                     likePost={() => this.likePost(item)}
                     deletePost={() => this.deletePost(item)}
+                    handleEditFormShow={this.handleEditFormShow}
+                    handleSelectedPost={() => this.handleSelectedPost(item)}
                 />
             )
         })
@@ -126,6 +165,7 @@ class Blogpage extends Component {
         const postOpacity = this.state.isPanding ? 0.5 : 1;
 
         return (
+
             <div className='blogPage'>
 
                 {this.state.showAddForm && (
@@ -134,6 +174,16 @@ class Blogpage extends Component {
                         handleAddFormHide={this.handleAddFormHide}
                     />
                 )}
+
+                {
+                    this.state.showEditForm && (
+                        <EditPostForm
+                            handleEditFormHide={this.handleEditFormHide}
+                            selectedPost={this.state.selectedPost}
+                            editBlogPost={this.editBlogPost}
+                        />
+                    )
+                }
 
                 <>
                     <h1>Блог</h1>
@@ -144,7 +194,7 @@ class Blogpage extends Component {
                     <div className='posts' style={{ opacity: postOpacity }}>
                         {blokPosts}
                     </div>
-                    {!this.state.isPanding && <CircularProgress className='preloader' />}
+                    {this.state.isPanding && <CircularProgress className='preloader' />}
                 </>
 
             </div>

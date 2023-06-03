@@ -1,0 +1,32 @@
+.loginForm {
+
+    width: max-content;
+    padding: 20px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.loginForm h2 {
+    margin: 0;
+    margin-bottom: 10px;
+}
+
+.loginFormInput {
+    width: 100%;
+    padding: 4 5px;
+    border-radius: 5px;
+    border: 1px solid #c2bcbc;
+    
+}
+  
+.loginFormInput:focus::placeholder {
+    color: transparent;
+}
+
+input {
+    padding-left: 10px;
+}
+
+.loginForm button {
+    width: 100%;
+}

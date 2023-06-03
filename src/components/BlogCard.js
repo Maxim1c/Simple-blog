@@ -1,6 +1,7 @@
 import { Component } from "react"
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import EditIcon from '@mui/icons-material/Edit';
 
 const BlogCard = ({
 
@@ -8,9 +9,17 @@ const BlogCard = ({
     description,
     Liked,
     likePost,
-    deletePost
+    deletePost,
+    handleEditFormShow,
+    handleSelectedPost
 
 }) => {
+
+    const shouEditForm = () => {
+        handleSelectedPost();
+        handleEditFormShow();
+
+    }
 
     const heartFill = Liked ? 'crimson' : 'black'
 
@@ -28,9 +37,15 @@ const BlogCard = ({
                 </div>
             </div>
 
-            <button className="deleteBtn" onClick={deletePost}>
-                <DeleteForeverIcon />
-            </button>
+            <div className="postControl">
+                <button className="editBtn" onClick={shouEditForm}>
+                    <EditIcon />
+                </button>
+
+                <button className="deleteBtn" onClick={deletePost}>
+                    <DeleteForeverIcon />
+                </button>
+            </div>
 
         </div>
     )
