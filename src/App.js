@@ -1,33 +1,43 @@
-import { Route, Routes } from 'react-router-dom';
+import React, { useState } from 'react';
+import { BrowserRouter, Route, Router, Routes } from 'react-router-dom';
 import './App.css';
 
-import { Homepage } from './pages/Homepage';
-import { Blogpage } from './pages/Blogpage';
-import { Singlpage } from './pages/Singlpage';
-import { Notfoundpage } from './pages/Notfoundpage';
-import { Aboutepage } from './pages/Aboutepage';
-import { Layout } from './components/Layout';
+import { Header, Layout } from './components/Header';
 import { LoginPage } from './pages/LoginPage';
+import { Footer } from './pages/Footer';
+import { Switch } from '@mui/material';
+import { HomePage } from './pages/HomePage';
+import { Blogpage } from './pages/Blogpage';
 
 
 function App() {
+
+  const [isLoggedIn, setLoggedIn] = useState(false);
+
   return (
-    <>
-      <switch>
+
+
+    <div className='App'>
+
+      <Header isLoggedIn={isLoggedIn} setLoggedIn={setLoggedIn} />
+
+      <main className='conteiner'>
 
         <Routes>
-          <Route exact path='/' element={<Layout />}>
-            <Route index element={<Homepage />} />
-            <Route path='posts' element={<Blogpage />} />
-            <Route path='posts/:id' element={<Singlpage />} />
-            <Route path='about' element={<Aboutepage />} />
-            <Route path='*' element={<Notfoundpage />} />
-            <Route path='loginPage' element={<LoginPage />} />
-          </Route>
-        </Routes>
-      </switch>
 
-    </>
+          <Route exact path="/" Component={() => <HomePage />} />
+
+          <Route exact path="/posts" Component={() => <Blogpage />} />
+
+          <Route exact path="/loginPage" Component={(props) => <LoginPage {...props} setLoggedIn={setLoggedIn} />} />
+
+        </Routes>
+
+      </main>
+
+      <Footer year={new Date().getFullYear()} />
+
+    </div >
 
   );
 }

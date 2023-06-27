@@ -1,10 +1,13 @@
 import './LoginPage.css'
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = (props) => {    
 
-    const handleLogin = (e) => {
-        e.preventDefault()
-        props.history.push('/')
+    const navigate = useNavigate()
+
+    const handleLogin = () => {
+        navigate("../", { replace: true });
+        props.setLoggedIn(true);
     }
 
     return (
